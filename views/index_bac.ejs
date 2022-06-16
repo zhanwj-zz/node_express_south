@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title></title>
+    <style>
+
+        .inner{
+            max-width: 640px;
+            margin: 0 auto;
+
+
+        }
+
+        h2 {
+            text-align: center;
+            background: #eee;
+
+            color: red;
+            height: 50px;
+            line-height: 50px;
+        }
+
+        .chat{
+            padding:20px;
+            border: 1px solid #f60;
+            height: 500px;
+        }
+
+        .send{
+
+            width: 100%;
+
+            bottom:5px;
+            height: 44px;
+            line-height: 44px;
+            display: flex;
+            overflow-x: hidden;
+        }
+
+        .send input[type='text']{
+            flex: 1;
+        }
+
+        .send input[type='button']{
+            width: 100px;
+
+
+        }
+
+
+    </style>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="jquery-1.11.3.min.js"></script>
+    <script>
+
+
+        $(function(){
+
+
+            var socket=io.connect('http://10.51.152.251:3000');
+
+
+            socket.on('toClient',function(data){   /*监听服务器广播的数据*/
+
+                $(".list").append(`<li><strong>${data.name}:</strong> ${data.msg}</li>`);
+
+                $('#msg').val('');
+                
+                $('.footer').get(0).scrollIntoView(true);
+            })
+
+            //发送数据
+            $('#send').click(function(){
+
+                socket.emit('toServer',{
+                    msg:$('#msg').val(),
+                    name:'<%=name%>'
+                })
+
+            })
+
+
+        })
+    </script>
+</head>
+<body>
+
+<div class="inner">
+    <h2>聊天端口</h2>
+
+    <div class="chat" style="overflow-x: auto">
+        <ul class="list">
+
+        </ul>
+	   <p class="footer"> </p>
+
+    </div>
+
+    <div class="send">
+
+        <input type="text" id="msg"/>
+        <input type="button" id="send" value="发送"/>
+
+    </div>
+</div>
+</body>
+</html>
